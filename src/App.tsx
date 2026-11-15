@@ -1,7 +1,16 @@
 
 import "./App.css";
+import { useCamera } from "./hooks/useCamera";
 
 function App() {
+  const {
+    videoRef,
+    isCameraOn,
+    error,
+    startCamera,
+    stopCamera,
+  } = useCamera();
+
   return (
     <main className="app">
       <header className="topbar">
@@ -14,8 +23,8 @@ function App() {
         </div>
 
         <div className="status">
-          <span className="status-dot" />
-          Camera disconnected
+          <span className={`status-dot ${isCameraOn ? "connected" : ""}`} />
+          {isCameraOn ? "Camera connected" : "Camera disconnected"}
         </div>
       </header>
 
@@ -40,7 +49,7 @@ function App() {
             <div className="empty-state">
               <div className="empty-icon">✦</div>
               <h3>Your canvas awaits</h3>
-              <p>Connect your camera to start drawing in the air.</p>
+              <p>Hand tracking and drawing are coming next.</p>
             </div>
           </div>
 
@@ -54,25 +63,43 @@ function App() {
           <div className="panel-heading">
             <div>
               <h2>Camera preview</h2>
-              <p>Hand tracking view</p>
+              <p>Live webcam view</p>
             </div>
-            <span className="camera-indicator">OFF</span>
+            <span className="camera-indicator">
+              {isCameraOn ? "LIVE" : "OFF"}
+            </span>
           </div>
 
           <div className="camera-preview">
-            <div className="camera-placeholder">
-              <span>◎</span>
-              <p>Camera preview will appear here</p>
-            </div>
+            <video
+              ref={videoRef}
+              className="camera-video"
+              autoPlay
+              playsInline
+              muted
+              hidden={!isCameraOn}
+            />
+
+            {!isCameraOn && (
+              <div className="camera-placeholder">
+                <span>◎</span>
+                <p>Your camera preview will appear here.</p>
+              </div>
+            )}
           </div>
 
           <div className="camera-info">
-            <span className="status-dot" />
-            Waiting for camera connection
+            <span className={`status-dot ${isCameraOn ? "connected" : ""}`} />
+            {isCameraOn ? "Camera is running" : "Waiting for camera connection"}
           </div>
 
-          <button className="connect-button" disabled>
-            Camera integration coming soon
+          {error && <p className="camera-error">{error}</p>}
+
+          <button
+            className="connect-button"
+            onClick={isCameraOn ? stopCamera : startCamera}
+          >
+            {isCameraOn ? "Disconnect camera" : "Connect camera"}
           </button>
         </aside>
       </section>
