@@ -281,3 +281,39 @@ button {
     flex-wrap: wrap;
   }
 }
+
+
+.status-dot.connected {
+  background: #35d49a;
+}
+
+.camera-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  transform: scaleX(-1);
+}
+
+.camera-video[hidden] {
+  display: none;
+}
+
+.camera-error {
+  color: #ff8585;
+  font-size: 12px;
+  line-height: 1.5;
+  margin-top: 12px;
+}
+
+.connect-button {
+  cursor: pointer;
+  color: #ffffff;
+  background: linear-gradient(135deg, #6954e8, #4b79ed);
+  border: none;
+  transition: opacity 0.2s ease;
+}
+
+.connect-button:hover {
+  opacity: 0.85;
+}
