@@ -4,6 +4,7 @@ import { useHandTracking } from "./hooks/useHandTracking";
 import { useCamera } from "./hooks/useCamera";
 import { useFingertip } from "./hooks/useFingertip";
 import "./App.css";
+import { usePinchGesture } from "./hooks/usePinchGesture";
 
 function App() {
   const {
@@ -22,17 +23,18 @@ function App() {
   } = useHandTracking(videoRef, isCameraOn);
 
   const fingertip = useFingertip(landmarks);
+  const isPinching = usePinchGesture(landmarks);
 
   const smoothX = useRef(0);
   const smoothY = useRef(0);
 
   const cursorPosition = fingertip
     ? {
-        x: (smoothX.current +=
-          (fingertip.x - smoothX.current) * 0.25),
-        y: (smoothY.current +=
-          (fingertip.y - smoothY.current) * 0.25),
-      }
+      x: (smoothX.current +=
+        (fingertip.x - smoothX.current) * 0.25),
+      y: (smoothY.current +=
+        (fingertip.y - smoothY.current) * 0.25),
+    }
     : null;
 
   return (
@@ -94,7 +96,9 @@ function App() {
           </div>
 
           <div className="canvas-footer">
-            <span>Ready to create</span>
+            <span>
+              {isPinching ? "Drawing gesture detected" : "Ready to create"}
+            </span>
             <span>AirCanvas · Workspace</span>
           </div>
         </section>
