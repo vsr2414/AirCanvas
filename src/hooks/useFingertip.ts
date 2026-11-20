@@ -13,7 +13,6 @@ export function useFingertip(landmarks: HandPoint[]) {
       return null;
     }
 
-    // Landmark 8 represents the index fingertip.
     const tip = landmarks[8];
 
     return {
