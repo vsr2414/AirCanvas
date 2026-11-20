@@ -97,8 +97,8 @@ function App() {
 
           <div className="canvas-footer">
             <span>
-              {isPinching ? "Drawing gesture detected" : "Ready to create"}
-            </span>
+  {isPinching ? "Drawing gesture detected" : "Ready to create"}
+</span>
             <span>AirCanvas · Workspace</span>
           </div>
         </section>
