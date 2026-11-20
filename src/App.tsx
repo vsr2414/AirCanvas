@@ -1,6 +1,7 @@
 import { useHandTracking } from "./hooks/useHandTracking";
 import "./App.css";
 import { useCamera } from "./hooks/useCamera";
+import { useFingertip } from "./hooks/useFingertip";
 
 function App() {
   const {
@@ -17,6 +18,7 @@ function App() {
     landmarks,
     error: trackingError,
   } = useHandTracking(videoRef, isCameraOn);
+  const fingertip = useFingertip(landmarks);
 
   return (
     <main className="app">
@@ -59,6 +61,15 @@ function App() {
           </div>
 
           <div className="drawing-area">
+            {fingertip && (
+              <div
+                className="fingertip-cursor"
+                style={{
+                  left: `${fingertip.x * 100}%`,
+                  top: `${fingertip.y * 100}%`,
+                }}
+              />
+            )}
             <div className="empty-state">
               <div className="empty-icon">✦</div>
               <h3>Your canvas awaits</h3>
