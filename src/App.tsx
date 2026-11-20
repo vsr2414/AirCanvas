@@ -1,4 +1,4 @@
-
+import { useHandTracking } from "./hooks/useHandTracking";
 import "./App.css";
 import { useCamera } from "./hooks/useCamera";
 
@@ -10,6 +10,13 @@ function App() {
     startCamera,
     stopCamera,
   } = useCamera();
+
+  const {
+    isModelReady,
+    handDetected,
+    landmarks,
+    error: trackingError,
+  } = useHandTracking(videoRef, isCameraOn);
 
   return (
     <main className="app">
@@ -24,7 +31,13 @@ function App() {
 
         <div className="status">
           <span className={`status-dot ${isCameraOn ? "connected" : ""}`} />
-          {isCameraOn ? "Camera connected" : "Camera disconnected"}
+          {!isCameraOn
+            ? "Camera disconnected"
+            : !isModelReady
+              ? "Loading hand tracking..."
+              : handDetected
+                ? "Hand detected"
+                : "Looking for your hand"}
         </div>
       </header>
 
@@ -89,8 +102,13 @@ function App() {
           </div>
 
           <div className="camera-info">
-            <span className={`status-dot ${isCameraOn ? "connected" : ""}`} />
-            {isCameraOn ? "Camera is running" : "Waiting for camera connection"}
+            <span className={`status-dot ${handDetected ? "connected" : ""}`} />
+            {trackingError ||
+              (isModelReady
+                ? handDetected
+                  ? `Hand detected · ${landmarks.length} landmarks`
+                  : "Move your hand in front of the camera"
+                : "Loading MediaPipe model...")}
           </div>
 
           {error && <p className="camera-error">{error}</p>}
