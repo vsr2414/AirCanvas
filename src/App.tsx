@@ -1,6 +1,10 @@
+
+import { useRef } from "react";
 import { useHandTracking } from "./hooks/useHandTracking";
-import "./App.css";
 import { useCamera } from "./hooks/useCamera";
+import { useFingertip } from "./hooks/useFingertip";
+import "./App.css";
+import { usePinchGesture } from "./hooks/usePinchGesture";
 
 function App() {
   const {
@@ -17,6 +21,21 @@ function App() {
     landmarks,
     error: trackingError,
   } = useHandTracking(videoRef, isCameraOn);
+
+  const fingertip = useFingertip(landmarks);
+  const isPinching = usePinchGesture(landmarks);
+
+  const smoothX = useRef(0);
+  const smoothY = useRef(0);
+
+  const cursorPosition = fingertip
+    ? {
+      x: (smoothX.current +=
+        (fingertip.x - smoothX.current) * 0.25),
+      y: (smoothY.current +=
+        (fingertip.y - smoothY.current) * 0.25),
+    }
+    : null;
 
   return (
     <main className="app">
@@ -59,6 +78,16 @@ function App() {
           </div>
 
           <div className="drawing-area">
+            {cursorPosition && (
+              <div
+                className="fingertip-cursor"
+                style={{
+                  left: `${cursorPosition.x * 100}%`,
+                  top: `${cursorPosition.y * 100}%`,
+                }}
+              />
+            )}
+
             <div className="empty-state">
               <div className="empty-icon">✦</div>
               <h3>Your canvas awaits</h3>
@@ -67,7 +96,9 @@ function App() {
           </div>
 
           <div className="canvas-footer">
-            <span>Ready to create</span>
+            <span>
+              {isPinching ? "Drawing gesture detected" : "Ready to create"}
+            </span>
             <span>AirCanvas · Workspace</span>
           </div>
         </section>
